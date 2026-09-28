@@ -201,29 +201,17 @@ bot.action("MY_MEMBER_NUMBER", async (ctx) => {
 // ===============================
 
 bot.command("id", async (ctx) => {
-
-  const member = getMember(ctx.from.id);
-
-  if (!member) {
-
-    return ctx.reply(
-      `❌ You are not registered yet.\n\n` +
-      `Join the 100 For All group first.`
-    );
-  }
+  const member = registerMember(ctx.from);
 
   await ctx.reply(
-    `🪪 *100 For All Member*\n\n` +
+    `🪪 100 For All Member\n\n` +
     `Member Number:\n` +
     `*${member.member_number}*\n\n` +
     `👤 ${member.display_name}\n` +
     `🟢 ${member.status}`,
-    {
-      parse_mode: "Markdown"
-    }
+    { parse_mode: "Markdown" }
   );
 });
-
 
 // ===============================
 // /MEMBERS
