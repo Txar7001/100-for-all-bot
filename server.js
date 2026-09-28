@@ -1,4 +1,26 @@
 require("dotenv").config();
+const { Telegraf } = require("telegraf");
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
+
+bot.start(async (ctx) => {
+  await ctx.reply(
+    "💯 100 For All\n\n" +
+    "Welcome!\n\n" +
+    "Your Telegram account is connected."
+  );
+});
+
+bot.command("id", async (ctx) => {
+  await ctx.reply(
+    `Telegram ID: ${ctx.from.id}\n` +
+    `Name: ${ctx.from.first_name || ""}`
+  );
+});
+
+bot.launch();
+
+console.log("💯 100 For All Bot is running...");
 
 const express = require("express");
 const crypto = require("crypto");
