@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>100 For All</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 380px;
+      background: white;
+      border-radius: 20px;
+      padding: 30px 25px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.12);
+    }
+
+    .logo {
+      font-size: 55px;
+      margin-bottom: 5px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .tagline {
+      color: #777;
+      margin-top: 8px;
+      margin-bottom: 25px;
+    }
+
+    .member-title {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .member-number {
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 16px;
+      border-radius: 20px;
+      background: #e8f7e8;
+      color: #208020;
+      font-size: 14px;
+    }
+
+    .loading {
+      color: #777;
+    }
+
+    .error {
+      color: #c62828;
+      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <div class="logo">💯</div>
+
+    <h1>100 For All</h1>
+
+    <div class="tagline">
+      Small Contribution. Shared Impact.
+    </div>
+
+    <div id="loading" class="loading">
+      Loading member information...
+    </div>
+
+    <div id="member" style="display:none;">
+
+      <div class="member-title">
+        MEMBER NUMBER
+      </div>
+
+      <div id="memberNumber" class="member-number">
+        —
+      </div>
+
+      <div id="memberName" class="name">
+        —
+      </div>
+
+      <div id="memberStatus" class="status">
+        ACTIVE
+      </div>
+
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+
+    <div class="footer">
+      100 ကျပ်စီကနေ အားလုံးအတွက်
+    </div>
+
+  </div>
+
+<script>
+
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+async function loadMember() {
+
+  const initData = tg.initData;
+
+  if (!initData) {
+
+    document.getElementById("loading").style.display = "none";
+
+    const error = document.getElementById("error");
+
+    error.style.display = "block";
+
+    error.textContent =
+      "Please open this Mini App from Telegram.";
+
+    return;
+  }
+
+  try {
+
+    const response = await fetch("/api/member", {
+
+      method: "GET",
+
+      headers: {
+        "X-Telegram-Init-Data": initData
+      }
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.error || "Unable to load member information"
+      );
+    }
+
+    document.getElementById("loading").style.display = "none";
+
+    document.getElementById("member").style.display = "block";
+
+    document.getElementById("memberNumber").textContent =
+      data.member.member_number;
+
+    document.getElementById("memberName").textContent =
+      data.member.display_name;
+
+    document.getElementById("memberStatus").textContent =
+      data.member.status;
+
+  } catch (error) {
+
+    document.getElementById("loading").style.display = "none";
+
+    const errorBox = document.getElementById("error");
+
+    errorBox.style.display = "block";
+
+    errorBox.textContent = error.message;
+
+  }
+}
+
+loadMember();
+
+</script>
+
+</body>
+</html>
