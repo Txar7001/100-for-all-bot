@@ -34,9 +34,6 @@ bot.command("menu", async (ctx) => {
   );
 });
 
-bot.launch();
-
-console.log("💯 100 For All Bot is running...");
 const express = require("express");
 const crypto = require("crypto");
 const Database = require("better-sqlite3");
@@ -58,7 +55,63 @@ db.exec(`
     status TEXT DEFAULT 'ACTIVE'
   )
 `);
+bot.on("new_chat_members", async (ctx) => {
+  for (const user of ctx.message.new_chat_members) {
+    try {
+      const telegramId = String(user.id);
 
+      // Already registered?
+      const existing = db
+        .prepare("SELECT * FROM members WHERE telegram_id = ?")
+        .get(telegramId);
+
+      if (existing) {
+        continue;
+      }
+
+      const next = db
+        .prepare("SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM members")
+        .get();
+
+      const memberNumber =
+        `100FA-${String(next.nextId).padStart(4, "0")}`;
+
+      const displayName =
+        [user.first_name, user.last_name]
+          .filter(Boolean)
+          .join(" ") || "Member";
+
+      const joinedAt = new Date().toISOString();
+
+      db.prepare(`
+        INSERT INTO members
+        (
+          telegram_id,
+          username,
+          display_name,
+          member_number,
+          joined_at,
+          status
+        )
+        VALUES (?, ?, ?, ?, ?, 'ACTIVE')
+      `).run(
+        telegramId,
+        user.username || null,
+        displayName,
+        memberNumber,
+        joinedAt
+      );
+
+      await ctx.reply(
+        `💯 Welcome to 100 For All!\n\n` +
+        `🪪 Your Member Number: ${memberNumber}`
+      );
+
+    } catch (error) {
+      console.error("Member registration error:", error);
+    }
+  }
+});
 function validateTelegramInitData(initData) {
   const params = new URLSearchParams(initData);
 
@@ -186,3 +239,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`100 For All server running on port ${PORT}`);
 });
+bot.launch();
+
+console.log("💯 100 For All Bot is running...");
