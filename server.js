@@ -1,27 +1,26 @@
 require("dotenv").config();
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(async (ctx) => {
   await ctx.reply(
     "💯 100 For All\n\n" +
-    "Welcome!\n\n" +
-    "Your Telegram account is connected."
-  );
-});
-
-bot.command("id", async (ctx) => {
-  await ctx.reply(
-    `Telegram ID: ${ctx.from.id}\n` +
-    `Name: ${ctx.from.first_name || ""}`
+    "Get your Digital Member Card 👇",
+    Markup.inlineKeyboard([
+      [
+        Markup.button.webApp(
+          "🪪 Get Member Card",
+          "https://one00-for-all-bot.onrender.com"
+        )
+      ]
+    ])
   );
 });
 
 bot.launch();
 
 console.log("💯 100 For All Bot is running...");
-
 const express = require("express");
 const crypto = require("crypto");
 const Database = require("better-sqlite3");
