@@ -20,13 +20,15 @@ bot.start(async (ctx) => {
 });
 bot.command("menu", async (ctx) => {
   await ctx.reply(
-    "💯 100 For All\n\n🪪 Get your Digital Member Card",
+    "💯 100 For All\n\n" +
+    "🪪 Get your Digital Member Card\n\n" +
+    "Tap the button below to open your member card.",
     Markup.inlineKeyboard([
       [
         Markup.button.url(
-  "🪪 Get Member Card",
-  "https://t.me/forallmenber_bot?startapp=member"
-	 )
+          "🪪 Get Member Card",
+          "https://t.me/forallmenber_bot"
+        )
       ]
     ])
   );
