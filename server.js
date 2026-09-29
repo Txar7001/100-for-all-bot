@@ -24,9 +24,9 @@ bot.command("menu", async (ctx) => {
     Markup.inlineKeyboard([
       [
         Markup.button.url(
-          "🪪 Get Member Card",
-          "https://t.me/forallmenber_bot?startapp"
-        )
+  "🪪 Get Member Card",
+  "https://t.me/forallmenber_bot?startapp=member"
+	 )
       ]
     ])
   );
