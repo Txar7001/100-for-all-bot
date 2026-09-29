@@ -27,7 +27,7 @@ bot.command("menu", async (ctx) => {
       [
         Markup.button.url(
           "🪪 Get Member Card",
-          "https://t.me/forallmenber_bot"
+          "https://t.me/forallmember_bot"
         )
       ]
     ])
