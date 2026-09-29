@@ -18,6 +18,19 @@ bot.start(async (ctx) => {
     ])
   );
 });
+bot.command("menu", async (ctx) => {
+  await ctx.reply(
+    "💯 100 For All\n\n🪪 Get your Digital Member Card",
+    Markup.inlineKeyboard([
+      [
+        Markup.button.url(
+          "🪪 Get Member Card",
+          "https://t.me/forallmenber_bot?startapp"
+        )
+      ]
+    ])
+  );
+});
 
 bot.launch();
 
