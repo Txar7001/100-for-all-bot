@@ -56,11 +56,10 @@ db.exec(`
   )
 `);
 bot.on("new_chat_members", async (ctx) => {
-  for (const user of ctx.message.new_chat_members) {
-    try {
+  try {
+    for (const user of ctx.message.new_chat_members) {
       const telegramId = String(user.id);
 
-      // Already registered?
       const existing = db
         .prepare("SELECT * FROM members WHERE telegram_id = ?")
         .get(telegramId);
@@ -101,15 +100,13 @@ bot.on("new_chat_members", async (ctx) => {
         memberNumber,
         joinedAt
       );
-
-      await ctx.reply(
-        `💯 Welcome to 100 For All!\n\n` +
-        `🪪 Your Member Number: ${memberNumber}`
-      );
-
-    } catch (error) {
-      console.error("Member registration error:", error);
     }
+
+    // Delete the group join notification
+    await ctx.deleteMessage();
+
+  } catch (error) {
+    console.error("Silent member registration error:", error);
   }
 });
 function validateTelegramInitData(initData) {
