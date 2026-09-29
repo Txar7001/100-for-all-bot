@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { Telegraf, Markup } = require("telegraf");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -20,7 +21,7 @@ bot.start(async (ctx) => {
 
 bot.command("menu", async (ctx) => {
   await ctx.reply(
-    "💯 100 For All\n\n🪪 Get your Member Card",
+    "💯 100 For All\n\n🪪 Get your Digital Member Card",
     Markup.inlineKeyboard([
       [
         Markup.button.webApp(
