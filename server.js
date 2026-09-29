@@ -23,6 +23,37 @@ bot.command("id", async (ctx) => {
   await ctx.reply(`Your Telegram ID: ${ctx.from.id}`);
 });
 
+const ADMIN_ID = "6287249334";
+
+bot.command("members", async (ctx) => {
+  if (String(ctx.from.id) !== ADMIN_ID) {
+    return;
+  }
+
+  const members = db
+    .prepare(`
+      SELECT member_number, display_name, status
+      FROM members
+      ORDER BY id ASC
+    `)
+    .all();
+
+  if (members.length === 0) {
+    return ctx.reply("💯 No members yet.");
+  }
+
+  let message = "💯 100 For All Members\n\n";
+
+  for (const member of members) {
+    message +=
+      `${member.member_number} — ${member.display_name} — ${member.status}\n`;
+  }
+
+  message += `\nTotal Members: ${members.length}`;
+
+  await ctx.reply(message);
+});
+
 bot.command("menu", async (ctx) => {
   await ctx.reply(
     "💯 100 For All\n\n" +
