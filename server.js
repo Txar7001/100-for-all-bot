@@ -18,6 +18,11 @@ bot.start(async (ctx) => {
     ])
   );
 });
+
+bot.command("id", async (ctx) => {
+  await ctx.reply(`Your Telegram ID: ${ctx.from.id}`);
+});
+
 bot.command("menu", async (ctx) => {
   await ctx.reply(
     "💯 100 For All\n\n" +
