@@ -18,6 +18,20 @@ bot.start(async (ctx) => {
   );
 });
 
+bot.command("menu", async (ctx) => {
+  await ctx.reply(
+    "💯 100 For All\n\n🪪 Get your Member Card",
+    Markup.inlineKeyboard([
+      [
+        Markup.button.webApp(
+          "🪪 Get Member Card",
+          "https://one00-for-all-bot.onrender.com"
+        )
+      ]
+    ])
+  );
+});
+
 bot.launch();
 
 console.log("💯 100 For All Bot is running...");
