@@ -1,216 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>100 For All</title>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>100 Foundation — Digital Member Card</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .card {
-      width: 90%;
-      max-width: 380px;
-      background: white;
-      border-radius: 20px;
-      padding: 30px 25px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,.12);
-    }
-
-    .logo {
-      font-size: 55px;
-      margin-bottom: 5px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .tagline {
-      color: #777;
-      margin-top: 8px;
-      margin-bottom: 25px;
-    }
-
-    .member-title {
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 8px;
-    }
-
-    .member-number {
-      font-size: 30px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .name {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 7px 16px;
-      border-radius: 20px;
-      background: #e8f7e8;
-      color: #208020;
-      font-size: 14px;
-    }
-
-    .loading {
-      color: #777;
-    }
-
-    .error {
-      color: #c62828;
-      font-size: 14px;
-    }
-
-    .footer {
-      margin-top: 25px;
-      font-size: 12px;
-      color: #999;
-    }
+    :root{--navy:#102a43;--blue:#1976d2;--ink:#102a43;--muted:#627d98;--bg:#eef3f7;--gold:#f5b940}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink);padding:24px 16px 40px}
+    .wrap{max-width:430px;margin:auto}.brand{display:flex;align-items:center;gap:12px;margin:4px 6px 18px}.mark{width:42px;height:42px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800}.brand h1{font-size:18px;margin:0}.brand p{font-size:12px;margin:3px 0 0;color:var(--muted)}
+    .card{overflow:hidden;border-radius:24px;background:#fff;box-shadow:0 16px 40px #102a431c}.hero{padding:26px 24px 22px;background:linear-gradient(135deg,var(--navy),#1f5f93);color:#fff;position:relative}.hero:after{content:"";position:absolute;width:150px;height:150px;border:22px solid #ffffff12;border-radius:50%;right:-54px;top:-60px}.kicker{font-size:11px;letter-spacing:2px;opacity:.72;text-transform:uppercase}.title{font-size:28px;margin:12px 0 6px;font-weight:800}.tagline{font-size:13px;opacity:.82}.body{padding:24px}.label{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}.id{font-size:29px;font-weight:800;letter-spacing:1px;margin:7px 0 22px}.name{font-size:21px;font-weight:700;margin:5px 0 20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 12px}.value{font-size:14px;font-weight:650;margin-top:5px}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#e7f7ef;color:#167447;padding:7px 11px;font-size:12px;font-weight:750}.dot{width:7px;height:7px;border-radius:50%;background:#22a06b}.verify{margin-top:24px;padding-top:20px;border-top:1px solid #e7edf2;display:flex;align-items:center;gap:14px}.qr{width:74px;height:74px;border:1px solid #d9e2ec;border-radius:12px;padding:5px;background:white}.verify p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}.verify strong{display:block;color:var(--ink);font-size:13px;margin-bottom:2px}.footer{text-align:center;color:var(--muted);font-size:11px;margin-top:18px}.loading,.error{padding:40px 10px;text-align:center;color:var(--muted)}.error{color:#b42318}
   </style>
 </head>
-
 <body>
-
-  <div class="card">
-
-    <div class="logo">💯</div>
-
-    <h1>100 For All</h1>
-
-    <div class="tagline">
-      Small Contribution. Shared Impact.
-    </div>
-
-    <div id="loading" class="loading">
-      Loading member information...
-    </div>
-
-    <div id="member" style="display:none;">
-
-      <div class="member-title">
-        MEMBER NUMBER
-      </div>
-
-      <div id="memberNumber" class="member-number">
-        —
-      </div>
-
-      <div id="memberName" class="name">
-        —
-      </div>
-
-      <div id="memberStatus" class="status">
-        ACTIVE
-      </div>
-
-    </div>
-
-    <div id="error" class="error" style="display:none;"></div>
-
-    <div class="footer">
-      100 ကျပ်စီကနေ အားလုံးအတွက်
-    </div>
-
-  </div>
-
-<script>
-
-const tg = window.Telegram.WebApp;
-
-tg.ready();
-tg.expand();
-
-async function loadMember() {
-
-  const initData = tg.initData;
-
-  if (!initData) {
-
-    document.getElementById("loading").style.display = "none";
-
-    const error = document.getElementById("error");
-
-    error.style.display = "block";
-
-    error.textContent =
-      "Please open this Mini App from Telegram.";
-
-    return;
-  }
-
-  try {
-
-    const response = await fetch("/api/member", {
-
-      method: "GET",
-
-      headers: {
-        "X-Telegram-Init-Data": initData
-      }
-
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.error || "Unable to load member information"
-      );
-    }
-
-    document.getElementById("loading").style.display = "none";
-
-    document.getElementById("member").style.display = "block";
-
-    document.getElementById("memberNumber").textContent =
-      data.member.member_number;
-
-    document.getElementById("memberName").textContent =
-      data.member.display_name;
-
-    document.getElementById("memberStatus").textContent =
-      data.member.status;
-
-  } catch (error) {
-
-    document.getElementById("loading").style.display = "none";
-
-    const errorBox = document.getElementById("error");
-
-    errorBox.style.display = "block";
-
-    errorBox.textContent = error.message;
-
-  }
-}
-
-loadMember();
-
-</script>
-
+  <main class="wrap">
+    <header class="brand"><div class="mark">100</div><div><h1>100 Foundation</h1><p>Join • Participate • Make an Impact</p></div></header>
+    <section class="card" id="card" hidden>
+      <div class="hero"><div class="kicker">Digital Member Card</div><div class="title">100 Foundation</div><div class="tagline">Small contribution. Shared impact.</div></div>
+      <div class="body"><div class="label">Member ID</div><div class="id" id="memberNumber">—</div><div class="label">Member name</div><div class="name" id="memberName">—</div><div class="grid"><div><div class="label">Joined</div><div class="value" id="joinedAt">—</div></div><div><div class="label">Status</div><div class="value"><span class="pill"><span class="dot"></span><span id="status">ACTIVE</span></span></div></div></div><div class="verify"><img class="qr" id="qr" alt="Member verification QR"><p><strong>Verify this card</strong>Scan the QR code to confirm this member ID and status.</p></div></div>
+    </section>
+    <div class="loading" id="loading">Loading your digital member card…</div><div class="error" id="error" hidden></div><div class="footer">100 ကျပ်စီကနေ အားလုံးအတွက်</div>
+  </main>
+  <script>
+    const tg=window.Telegram?.WebApp; tg?.ready(); tg?.expand();
+    const $=id=>document.getElementById(id);
+    function formatDate(value){try{return new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(value))}catch{return value}}
+    async function load(){
+      if(!tg?.initData){$('loading').hidden=true;$('error').hidden=false;$('error').textContent='Please open this card from the Telegram bot.';return}
+      try{const r=await fetch('/api/member',{headers:{'X-Telegram-Init-Data':tg.initData}});const data=await r.json();if(!r.ok||!data.success)throw Error(data.error||'Unable to load card');const m=data.member;$('memberNumber').textContent=m.member_number;$('memberName').textContent=m.display_name;$('joinedAt').textContent=formatDate(m.joined_at);$('status').textContent=m.status;$('qr').src=m.qr_data_url;$('loading').hidden=true;$('card').hidden=false}catch(e){$('loading').hidden=true;$('error').hidden=false;$('error').textContent=e.message}}
+    load();
+  </script>
 </body>
 </html>
