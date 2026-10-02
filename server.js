@@ -131,8 +131,33 @@ bot.action("MY_CARD", async (ctx) => {
 
 bot.command("members", async (ctx) => {
   if (String(ctx.from.id) !== ADMIN_ID) return;
-  const { total } = db.prepare("SELECT COUNT(*) AS total FROM members").get();
-  await ctx.reply(`💯 100 Foundation\n\n👥 Total members: ${total}`);
+  const members = db.prepare(`
+    SELECT member_number, display_name, status
+    FROM members
+    ORDER BY id ASC
+  `).all();
+
+  if (members.length === 0) {
+    await ctx.reply("💯 100 Foundation\n\nNo members registered yet.");
+    return;
+  }
+
+  const header = `💯 100 Foundation\n👥 Total members: ${members.length}\n\n`;
+  const lines = members.map((member, index) =>
+    `${index + 1}. ${member.member_number} | ${member.display_name} | ${member.status}`
+  );
+
+  // Telegram messages have a length limit, so send the complete list in
+  // multiple messages when the community grows.
+  let message = header;
+  for (const line of lines) {
+    if ((message + line + "\n").length > 3800) {
+      await ctx.reply(message.trim());
+      message = "📋 Continued member list\n\n";
+    }
+    message += `${line}\n`;
+  }
+  if (message.trim()) await ctx.reply(message.trim());
 });
 
 bot.command("id", async (ctx) => {
